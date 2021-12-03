@@ -9,10 +9,11 @@ enum SettingsItemType {
   modal,
 }
 
-typedef void PressOperationCallback();
+typedef PressOperationCallback = void Function();
 
 class CupertinoSettingsItem extends StatefulWidget {
   const CupertinoSettingsItem({
+    Key? key,
     required this.type,
     this.label,
     this.labelWidget,
@@ -36,7 +37,8 @@ class CupertinoSettingsItem extends StatefulWidget {
     this.valueTextStyle,
     this.switchActiveColor,
   })  : assert(labelMaxLines == null || labelMaxLines > 0),
-        assert(subtitleMaxLines == null || subtitleMaxLines > 0);
+        assert(subtitleMaxLines == null || subtitleMaxLines > 0),
+        super(key: key);
 
   final String? label;
   final Widget? labelWidget;
@@ -62,7 +64,7 @@ class CupertinoSettingsItem extends StatefulWidget {
   final Color? switchActiveColor;
 
   @override
-  State<StatefulWidget> createState() => new CupertinoSettingsItemState();
+  State<StatefulWidget> createState() => CupertinoSettingsItemState();
 }
 
 class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
@@ -80,9 +82,7 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
     final ListTileTheme tileTheme = ListTileTheme.of(context);
 
     final iconThemeData = IconThemeData(
-      color: widget.enabled
-          ? _iconColor(theme, tileTheme)
-          : CupertinoColors.inactiveGray,
+      color: widget.enabled ? _iconColor(theme, tileTheme) : CupertinoColors.inactiveGray,
     );
 
     Widget? leadingIcon;
@@ -163,10 +163,7 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
               padding: const EdgeInsetsDirectional.only(end: 11.0),
               child: CupertinoSwitch(
                 value: widget.switchValue!,
-                activeColor: widget.enabled
-                    ? (widget.switchActiveColor ??
-                        Theme.of(context).accentColor)
-                    : CupertinoColors.inactiveGray,
+                activeColor: widget.enabled ? (widget.switchActiveColor ?? Theme.of(context).accentColor) : CupertinoColors.inactiveGray,
                 onChanged: !widget.enabled
                     ? null
                     : (bool value) {
@@ -242,8 +239,7 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if ((widget.onPress != null || widget.onToggle != null) &&
-            widget.enabled) {
+        if ((widget.onPress != null || widget.onToggle != null) && widget.enabled) {
           if (mounted) {
             setState(() {
               pressed = true;
@@ -295,13 +291,10 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius:
-              isLargeScreen ? BorderRadius.all(Radius.circular(20)) : null,
+          borderRadius: isLargeScreen ? BorderRadius.all(Radius.circular(20)) : null,
           color: calculateBackgroundColor(context),
         ),
-        height: widget.subtitle == null && widget.subtitleWidget == null
-            ? 44.0
-            : 57.0,
+        height: widget.subtitle == null && widget.subtitleWidget == null ? 44.0 : 57.0,
         child: Row(
           children: rowChildren,
         ),
@@ -309,14 +302,13 @@ class CupertinoSettingsItemState extends State<CupertinoSettingsItem> {
     );
   }
 
-  Color calculateBackgroundColor(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.light
-          ? pressed
-              ? iosPressedTileColorLight
-              : Colors.white
-          : pressed
-              ? iosPressedTileColorDark
-              : iosTileDarkColor;
+  Color calculateBackgroundColor(BuildContext context) => Theme.of(context).brightness == Brightness.light
+      ? pressed
+          ? iosPressedTileColorLight
+          : Colors.white
+      : pressed
+          ? iosPressedTileColorDark
+          : iosTileDarkColor;
 
   Color? _iconColor(ThemeData theme, ListTileTheme tileTheme) {
     if (tileTheme.selectedColor != null) {

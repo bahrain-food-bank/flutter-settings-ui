@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:settings_ui/src/cupertino_settings_item.dart';
+
+import 'cupertino_settings_item.dart';
 
 import 'defines.dart';
 
@@ -30,7 +31,6 @@ class SettingsTile extends AbstractTile {
   final TextStyle? subtitleTextStyle;
   final Color? switchActiveColor;
   final _SettingsTileType _tileType;
-  final TargetPlatform? platform;
 
   const SettingsTile({
     Key? key,
@@ -50,7 +50,6 @@ class SettingsTile extends AbstractTile {
     this.enabled = true,
     this.onPressed,
     this.switchActiveColor,
-    this.platform,
   })  : _tileType = _SettingsTileType.simple,
         onToggle = null,
         switchValue = null,
@@ -74,7 +73,6 @@ class SettingsTile extends AbstractTile {
     this.titleTextStyle,
     this.subtitleTextStyle,
     this.switchActiveColor,
-    this.platform,
   })  : _tileType = _SettingsTileType.switchTile,
         onTap = null,
         onPressed = null,
@@ -86,23 +84,6 @@ class SettingsTile extends AbstractTile {
 
   @override
   Widget build(BuildContext context) {
-    final platform = this.platform ?? Theme.of(context).platform;
-
-    switch (platform) {
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        return iosTile(context);
-
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-        return androidTile(context);
-
-      default:
-        return iosTile(context);
-    }
-  }
-
-  Widget iosTile(BuildContext context) {
     if (_tileType == _SettingsTileType.switchTile) {
       return CupertinoSettingsItem(
         enabled: enabled,
@@ -145,60 +126,15 @@ class SettingsTile extends AbstractTile {
     }
   }
 
-  Widget androidTile(BuildContext context) {
-    if (_tileType == _SettingsTileType.switchTile) {
-      return SwitchListTile(
-        secondary: leading,
-        value: switchValue!,
-        activeColor: switchActiveColor,
-        onChanged: enabled ? onToggle : null,
-        title: titleWidget ??
-            Text(
-              title ?? '',
-              style: titleTextStyle,
-              maxLines: titleMaxLines,
-              overflow: TextOverflow.ellipsis,
-            ),
-        subtitle: subtitleWidget ??
-            (subtitle != null
-                ? Text(
-                    subtitle!,
-                    style: subtitleTextStyle,
-                    maxLines: subtitleMaxLines,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                : null),
-      );
-    } else {
-      return ListTile(
-        title: titleWidget ?? Text(title ?? '', style: titleTextStyle),
-        subtitle: subtitleWidget ??
-            (subtitle != null
-                ? Text(
-                    subtitle!,
-                    style: subtitleTextStyle,
-                    maxLines: subtitleMaxLines,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                : null),
-        leading: leading,
-        enabled: enabled,
-        trailing: trailing,
-        onTap: onTapFunction(context) as void Function()?,
-      );
-    }
-  }
-
-  Function? onTapFunction(BuildContext context) =>
-      onTap != null || onPressed != null
-          ? () {
-              if (onPressed != null) {
-                onPressed!.call(context);
-              } else {
-                onTap!.call();
-              }
-            }
-          : null;
+  Function? onTapFunction(BuildContext context) => onTap != null || onPressed != null
+      ? () {
+          if (onPressed != null) {
+            onPressed!.call(context);
+          } else {
+            onTap!.call();
+          }
+        }
+      : null;
 }
 
 class CustomTile extends AbstractTile {

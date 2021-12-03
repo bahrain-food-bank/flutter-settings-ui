@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:settings_ui/src/abstract_section.dart';
-import 'package:settings_ui/src/colors.dart';
+
+import 'abstract_section.dart';
+import 'colors.dart';
 
 class SettingsList extends StatelessWidget {
   final bool shrinkWrap;

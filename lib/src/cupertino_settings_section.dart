@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:settings_ui/settings_ui.dart';
+
+import 'settings_tile.dart';
 
 import 'colors.dart';
 import 'defines.dart';
@@ -8,10 +9,11 @@ import 'defines.dart';
 class CupertinoSettingsSection extends StatelessWidget {
   const CupertinoSettingsSection(
     this.items, {
+    Key? key,
     this.header,
     this.headerPadding = defaultTitlePadding,
     this.footer,
-  });
+  }) : super(key: key);
 
   final List<Widget> items;
 
@@ -41,10 +43,8 @@ class CupertinoSettingsSection extends StatelessWidget {
     for (int i = 0; i < items.length; i++) {
       if (i < items.length - 1) {
         var leftPadding = 0.0;
-        if (items[i] is SettingsTile &&
-            (i < items.length - 1 && (items[i + 1] is SettingsTile))) {
-          leftPadding =
-              (items[i] as SettingsTile).leading == null ? 15.0 : 54.0;
+        if (items[i] is SettingsTile && (i < items.length - 1 && (items[i + 1] is SettingsTile))) {
+          leftPadding = (items[i] as SettingsTile).leading == null ? 15.0 : 54.0;
         }
 
         itemsWithDividers.add(items[i]);
@@ -64,9 +64,7 @@ class CupertinoSettingsSection extends StatelessWidget {
         ? Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: Theme.of(context).brightness == Brightness.light
-                  ? CupertinoColors.white
-                  : iosTileDarkColor,
+              color: Theme.of(context).brightness == Brightness.light ? CupertinoColors.white : iosTileDarkColor,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,9 +73,7 @@ class CupertinoSettingsSection extends StatelessWidget {
           )
         : Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.light
-                  ? CupertinoColors.white
-                  : iosTileDarkColor,
+              color: Theme.of(context).brightness == Brightness.light ? CupertinoColors.white : iosTileDarkColor,
               border: Border(
                 top: const BorderSide(
                   color: borderColor,
@@ -115,8 +111,7 @@ class CupertinoSettingsSection extends StatelessWidget {
 
     return Padding(
       padding: largeScreen
-          ? EdgeInsets.only(
-              top: header == null ? 35.0 : 22.0, left: 22, right: 22)
+          ? EdgeInsets.only(top: header == null ? 35.0 : 22.0, left: 22, right: 22)
           : EdgeInsets.only(
               top: header == null ? 35.0 : 22.0,
             ),
